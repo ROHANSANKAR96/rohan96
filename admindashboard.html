@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #0d2e17; /* Light cyan background */
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            background-color: #0288D1; /* Blue color for sidebar */
+            color: #e2e2e2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.closed {
+            transform: translateX(-250px);
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 20px;
+            margin: 5px 0;
+            width: 90%;
+            text-align: center;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #0277BD; /* Darker blue on hover */
+        }
+
+        /* Main content styling */
+        .main {
+            flex: 1;
+            margin-left: 250px;
+            padding: 0;
+            transition: margin-left 0.3s ease, padding-left 0.3s ease;
+        }
+
+        .main.shifted {
+            margin-left: 0;
+        }
+
+        .header {
+            background-color: #0288D1; /* Blue color for header */
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: padding-left 0.3s ease;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: #fff;
+        }
+
+        .header .profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        .toggle-btn {
+            background-color: #beac6f; /* Blue color for button */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-btn:hover {
+            background-color: #805920; /* Darker blue on hover */
+        }
+
+        .content {
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: #000000;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* Adjust colors to match the blue theme */
+        .card {
+            background-color: #997d42; /* Light blue background for cards */
+            color: #4e3608;
+        }
+
+        .header {
+            background-color: #a5630d;
+        }
+
+        .sidebar {
+            background-color: #a5630d;
+        }
+
+        .sidebar a {
+            color: #E1F5FE;
+        }
+
+        .sidebar a.active, .sidebar a:hover {
+            background-color: #927129; /* Darker blue */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: white;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #b49b0d;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+        }
+
+        .modal input,
+        .modal button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body style="background-image: url('https://offloadmedia.feverup.com/secretsandiego.com/wp-content/uploads/2023/06/13024624/aaasusan-q-yin-2JIvboGLeho-unsplash-1024x683.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <a href="#" class="active" onclick="showDashboard(); setActiveMenu(this)">Dashboard</a>
+        <a href="#" onclick="showUsers(); setActiveMenu(this)">Users</a>
+        <a href="#" onclick="showBooks(); setActiveMenu(this)">Books</a> <!-- New Books link -->
+        <a href="#">Reports</a>
+        <a href="/loginpage.html">Logout</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="main">
+        <div class="header">
+            <button class="toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars fa-2xl" style="color: #e7e7e7;"></i></button>
+            <h1>Welcome, Admin</h1>
+            <div class="profile">
+                <span>Admin Name</span>
+                <img src="https://media.licdn.com/dms/image/v2/C4E03AQHjYDFQ6dsWWg/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1630654035963?e=2147483647&v=beta&t=DAyLRXWzb1X-cahOPCLdjG6ThwrrYK9bEPXNdY-BxS0" alt="Profile">
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="content" id="dashboardContent">
+            <div class="grid">
+                <div class="card">
+                    <h2>Total Users</h2>
+                    <p>150</p>
+                </div>
+                <div class="card">
+                    <h2>Total Orders</h2>
+                    <p>320</p>
+                </div>
+                <div class="card">
+                    <h2>Revenue</h2>
+                    <p>$12,000</p>
+                </div>
+                <div class="card">
+                    <h2>Today Issues</h2>
+                    <p>5</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users List Content -->
+        <div class="content hidden" id="usersContent">
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #E1F5FE; border: 1px solid #C9E4CA;">
+                    <tr>
+                        <td>1</td>
+                        <td>John Doe</td>
+                        <td>john@example.com</td>
+                        <td>Active</td>
+                        <td><span class="delete-btn" onclick="deleteUser(this)">Delete</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Jane Doe</td>
+                        <td>jane@example.com</td>
+                        <td>Inactive</td>
+                        <td><span class="delete-btn" onclick="deleteUser(this)">Delete</span></td>
+                    </tr>
+                    <!-- More rows here -->
+                </tbody>
+            </table>
+            <button onclick="showAddUserModal()" style="margin-top: 20px; padding: 10px 20px; background-color: #0288D1; color: white; border: none; border-radius: 5px;">Add User</button>
+        </div>
+
+        <!-- Books Content -->
+        <div class="content hidden" id="booksContent">
+            <table id="bookTable">
+                <thead>
+                    <tr>
+                        <th>Book ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody style="background-color: #E1F5FE; border: 1px solid #C9E4CA;">
+                    <tr>
+                        <td>1</td>
+                        <td>Harry Potter</td>
+                        <td>J.K. Rowling</td>
+                        <td>Available</td>
+                        <td><span class="delete-btn" onclick="deleteBook(this)">Delete</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>The Hobbit</td>
+                        <td>J.R.R. Tolkien</td>
+                        <td>Checked Out</td>
+                        <td><span class="delete-btn" onclick="deleteBook(this)">Delete</span></td>
+                    </tr>
+                    <!-- More rows here -->
+                </tbody>
+            </table>
+            <button onclick="showAddBookModal()" style="margin-top: 20px; padding: 10px 20px; background-color: #0288D1; color: white; border: none; border-radius: 5px;">Add Book</button>
+        </div>
+
+        <!-- Modal for adding user -->
+        <div id="addUserModal" class="modal">
+            <div class="modal-content">
+                <h3>Add New User</h3>
+                <input type="text" id="userName" placeholder="Enter user name">
+                <input type="email" id="userEmail" placeholder="Enter user email">
+                <select id="userStatus">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+                <button onclick="addUser()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const main = document.querySelector('.main');
+            sidebar.classList.toggle('closed');
+            main.classList.toggle('shifted');
+        }
+
+        // Show Dashboard Content
+        function showDashboard() {
+            document.getElementById('dashboardContent').classList.remove('hidden');
+            document.getElementById('usersContent').classList.add('hidden');
+            document.getElementById('booksContent').classList.add('hidden');
+        }
+
+        // Show Users Content
+        function showUsers() {
+            document.getElementById('dashboardContent').classList.add('hidden');
+            document.getElementById('usersContent').classList.remove('hidden');
+            document.getElementById('booksContent').classList.add('hidden');
+        }
+
+        // Show Books Content
+        function showBooks() {
+            document.getElementById('dashboardContent').classList.add('hidden');
+            document.getElementById('usersContent').classList.add('hidden');
+            document.getElementById('booksContent').classList.remove('hidden');
+        }
+
+        // Set active menu item
+        function setActiveMenu(menuItem) {
+            const menuItems = document.querySelectorAll('.sidebar a');
+            menuItems.forEach(item => item.classList.remove('active'));
+            menuItem.classList.add('active');
+        }
+
+        // Delete User from table
+        function deleteUser(button) {
+            const row = button.closest('tr');
+            row.remove();
+        }
+
+        // Delete Book from table
+        function deleteBook(button) {
+            const row = button.closest('tr');
+            row.remove();
+        }
+
+        // Show Add User Modal
+        function showAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'flex';
+        }
+
+        // Add User to table
+        function addUser() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const status = document.getElementById('userStatus').value;
+
+            const table = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+
+            newRow.innerHTML = `
+                <td>${table.rows.length}</td>
+                <td>${name}</td>
+                <td>${email}</td>
+                <td>${status}</td>
+                <td><span class="delete-btn" onclick="deleteUser(this)">Delete</span></td>
+            `;
+
+            // Clear input fields and hide modal
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userStatus').value = 'Active';
+            document.getElementById('addUserModal').style.display = 'none';
+        }
+
+        // Close the modal when clicked outside
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('addUserModal')) {
+                document.getElementById('addUserModal').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
