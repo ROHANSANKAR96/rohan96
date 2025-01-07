@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1d4b1e;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #2C3E50;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            height: 100vh;
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            margin: 10px 0;
+        }
+        .sidebar a:hover {
+            background-color: #34495E;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        .card {
+            background-color: white;
+            padding: 20px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+        .card .btn {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .card .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Library Management Dashboard</h1>
+    </header>
+
+    <div class="container">
+        <div class="sidebar">
+            <h2>Welcome, User</h2>
+            <a href="#">Home</a>
+            <a href="#">Available Books</a>
+            <a href="#">My Borrowed Books</a>
+            <a href="#">Search Books</a>
+            <a href="#">Notifications</a>
+            <a href="#">Settings</a>
+        </div>
+
+        <div class="content">
+            <div class="card">
+                <h3>Books Overview</h3>
+                <p>Available Books: 120</p>
+                <p>Books in Cart: 3</p>
+                <a href="#" class="btn">View All Available Books</a>
+            </div>
+
+            <div class="card">
+                <h3>Books in Cart</h3>
+                <ul>
+                    <li>Harry Potter and the Sorcerer's Stone</li>
+                    <li>The Great Gatsby</li>
+                    <li>1984 by George Orwell</li>
+                </ul>
+                <a href="#" class="btn">Proceed to Borrow</a>
+            </div>
+
+            <div class="card">
+                <h3>My Borrowed Books</h3>
+                <ul>
+                    <li>To Kill a Mockingbird - Due Jan 10, 2025</li>
+                    <li>The Catcher in the Rye - Due Jan 12, 2025</li>
+                </ul>
+                <a href="#" class="btn">View All Borrowed Books</a>
+            </div>
+
+            <div class="card">
+                <h3>Notifications</h3>
+                <ul>
+                    <li>Your borrowed book "To Kill a Mockingbird" is due on Jan 10, 2025.</li>
+                    <li>Reminder: "Harry Potter and the Sorcerer's Stone" is in your cart, don't forget to borrow it!</li>
+                </ul>
+                <a href="#" class="btn">View All Notifications</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
